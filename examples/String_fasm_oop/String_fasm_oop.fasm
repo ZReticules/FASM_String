@@ -1,0 +1,64 @@
+include "TOOLS\x86.inc"
+include "TOOLS\STDHEAD.inc"
+include "encoding\Win1251.inc"
+include "TOOLS\TOOLS.INC"
+include "TOOLS\cstdio.inc"
+include "String.inc"
+
+entry main
+
+importlib kernel32,\
+    SetConsoleCP,\
+    SetConsoleOutputCP
+
+importlib String_dll,\
+    String_input,\
+    String_print,\
+    String_alloc,\
+    String_sprintf,\
+    fstr_dynamic,\
+    fstr_free,\
+    String_fromBytes,\
+    String_free,\
+    String_slice
+
+proc main
+    locals
+        myStr   String pointer.size - 1, 0, 0
+        myStr2  String pointer.size - 1, 0, 0
+        lpFstr  dptr ?
+    endl
+    @call [SetConsoleCP](1251)
+    @call [SetConsoleOutputCP](1251)
+    ; @call myStr->input()
+    ; mov eax, [myStr.len]
+    @call myStr->sprintf(\
+        <const fstr \
+            "Asciiz format exapmle: \t\t\t|%-10.4s|\n" # \
+            "Decimal number format example: \t\t|%-+10.3d|\n" # \
+            "Variable precision and width example:\t|%*.*u|\n\n"\
+        >, \
+        "Hello, I am asciiz", \
+        10, \
+        10, 5, 15\
+    )
+    @call myStr->print()
+    @call myStr->sprintf(\
+        <const fstr \
+            "Character:              |%*c|\n" # \
+            "Decimal signed number:  |%+15.5d|\n" # \
+            "Decimal unsigned number:|%15.12u|\n" # \
+            "Hex number:             |%-15x|\n" # \
+            "Oct number:             |%15o|\n" # \
+            "Asciiz string:          |%15.7s|\n" # \
+            "String from console:    |%15.10S|\n" # \
+            "Percent symbol:         |%15%|"\
+        >, \
+        15, +"e", 12, -1, \
+        0x19, 17o, "I`m asciiz!", \
+        addr myStr\
+    )
+    @call myStr->print()
+    @call myStr->free()
+    ret
+endp

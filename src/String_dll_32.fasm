@@ -1,0 +1,50 @@
+define PROGRAM_TYPE DLL
+
+include "TOOLS\x86.inc"
+include "TOOLS\STDHEAD.inc"
+include "encoding\Win1251.inc"
+include "TOOLS\TOOLS.INC"
+include "TOOLS\cstdio.inc"
+include "String.inc"
+
+entry dll_start
+
+proc_noprologue
+
+proc dll_start stdcall, hinstDLL, fdwReason, lpvReserved
+	mov eax, 1
+	ret
+endp
+
+data import
+	@init_import
+end data
+
+data export
+	export "String_dll_32.dll",\
+		String_print, 		"String_print",\
+		String_getLpChars, 	"String_getLpChars",\
+		String_flush, 		"String_flush",\
+		String.alloc, 		"String_alloc",\
+		String.realloc, 	"String_realloc",\
+		String.free, 		"String_free",\
+		String.fromBytes, 	"String_fromBytes",\
+		String.addBytes, 	"String_addBytes",\
+		String.fromString, 	"String_fromString",\
+		String.addString, 	"String_addString",\
+		String.slice, 		"String_slice",\
+		String.input, 		"String_input",\
+		String.fromByte, 	"String_fromByte",\
+		String.addByte, 	"String_addByte",\
+		String.fromNum, 	"String_fromNum",\
+		String.addNum, 		"String_addNum",\
+		String.sprintf, 	"String_sprintf",\
+		fstr_dynamic, 		"fstr_dynamic",\
+		fstr_free, 			"fstr_free"
+end data
+
+@init_consts
+@init_tls
+@init_liters
+
+section '.reloc' data readable discardable fixups
